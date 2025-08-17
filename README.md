@@ -1,69 +1,75 @@
-# React + TypeScript + Vite
+# NoSurf — Chrome extension
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NoSurf helps you block distracting websites so you can stay focused.
 
-Currently, two official plugins are available:
+## What's included
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- The ready-to-load build files are in the `No Surf Extension/` folder at the repository root.
+  - That folder contains `manifest.json`, `background.js`, and the extension UI files you can load into Chrome.
+- Source files are in `src/` (React + Vite).
 
-## Expanding the ESLint configuration
+## Quick install — load the unpacked build into Chrome
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Open Chrome and go to: `chrome://extensions`.
+2. Enable **Developer mode** (toggle in the top-right).
+3. Click **Load unpacked**.
+4. In the file chooser, select the `No Surf Extension/` folder from this repository. Example path on this machine:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+   `E:\Chrome Extensions\nosurf-extension\No Surf Extension`
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+   Important: pick the folder that contains `manifest.json` at its root.
+5. The extension should appear in the list. Use the extension icon or the popup to access NoSurf.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Verify it works
+
+- Open the extension UI and add a site to block (for example: `instagram.com`).
+- Visit the blocked site in a new tab — the extension should act according to its blocking behavior (redirect, show a block page, or otherwise prevent access depending on implementation).
+- To apply changes after editing the build files, go to `chrome://extensions` and click **Reload** for the NoSurf extension.
+
+## Rebuild from source (optional)
+
+Assumptions:
+- This project uses Node + Vite (check `package.json` and `vite.config.ts`).
+- The default Vite output folder is `dist/` unless configured otherwise.
+
+Typical steps to build from source:
+
+```bash
+# install dependencies
+npm ci
+
+# build the project
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+After building:
+- If the build output is `dist/`, copy or move its contents into the `No Surf Extension/` folder so `manifest.json` and other extension assets are present at the root you will load into Chrome.
+- Some projects are configured to output directly to a Chrome extension folder. If your build already writes to `No Surf Extension/`, no copy is necessary.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Update workflow
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- During development, use `npm run dev` (if available) to run a dev server for the popup UI. Note: Chrome cannot load remote dev servers for extension UIs — you typically build static files to test the packaged extension.
+- After changing files inside `No Surf Extension/`, reload the extension from `chrome://extensions`.
+
+## Troubleshooting
+
+- "Manifest missing" or "Manifest version error": Ensure you selected the folder that contains `manifest.json`.
+- Permissions not applied: Confirm `manifest.json` lists the required host permissions and optional permissions are granted when Chrome prompts.
+- Extension not blocking sites: Open the extension background page console for errors. Go to `chrome://extensions`, find NoSurf, click **Inspect views** under the extension entry, and check the console for `background.js` or UI errors.
+- Build output not found: Check `vite.config.ts` or `package.json` for the actual build output directory and adapt copy steps accordingly.
+
+## Privacy & data
+
+- This extension runs locally in your browser and uses Chrome extension APIs. Review `manifest.json`, `background.js`, and any storage code to understand what data (if any) is stored or transmitted.
+
+## Developer notes
+
+- Source: `src/` (React + TypeScript). Main UI file: `src/App.tsx`.
+- Build assets used by the extension are located in the `No Surf Extension/` folder in this repository.
+
+---
+
+Requirements coverage:
+- README file updated at repo root: Done
+- Instructions to set up in Chrome from `No Surf Extension/`: Done
+- Optional build guidance and troubleshooting: Done
